@@ -126,6 +126,8 @@ def generate_receipt():
     vatStr = "Value Added Tax"
     totalStr = "TOTAL"
     subtotalStr = "Subtotal"
+    tenderedStr = "Tendered Amount"
+    changeStr = "Change"
 
     invoice = "Inovoice No." + str(random.randrange(1000000000,9999999999))
 
@@ -133,6 +135,8 @@ def generate_receipt():
     discount = computed["discount"]
     vat = computed["vat"]
     total = computed["total"]
+    tendered = computed["tendered"]
+    change = computed["change"]
 
     print("==================================================")
     print(f"{store_name:^50}")
@@ -152,8 +156,9 @@ def generate_receipt():
     print(f"{discountStr:<40}{discount:>10}")
     print(f"{vatStr:<40}{vat:>10}")
     print(f"{totalStr:<40}{total:>10}")
-        
-
+    print("==================================================")
+    print(f"{tenderedStr:<40}{tendered:>10}")
+    print(f"{changeStr:<40}{change:>10}")
     print("==================================================")
 
     cart = []
@@ -170,7 +175,7 @@ def findItem(item_selection):
 def compute():
     subtotal = 0.0
     apply_discount = get_input("Apply Discount (%): ")
-    discount = round(apply_discount / 100, 2)
+    discount = round(apply_discount / 100, 3)
     vat = 0.0
 
     for i in cart:
@@ -183,10 +188,16 @@ def compute():
 
     discount = subtotal * discount
     discounted_amount = subtotal - discount
-    vat = round(discounted_amount * .12, 2)
-    total = round(discounted_amount + vat, 2)
+    vat = round(discounted_amount * .12, 3)
+    total = round(discounted_amount + vat, 3)
 
-    return {"discount": discount, "subtotal": subtotal, "vat": vat, "total": total}
+    amount_tendered = 0
+    while amount_tendered < total:
+        amount_tendered = get_amount("Amount Tendered: ")
+
+    change = round(amount_tendered - total, 3)
+
+    return {"discount": discount, "subtotal": subtotal, "vat": vat, "total": total, "tendered":amount_tendered, "change": change}
 
 if __name__ == '__main__':
     global cart
